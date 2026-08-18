@@ -354,7 +354,7 @@ def _build_network(account_id: int) -> dict:
 def login(req: LoginRequest):
     user = _DEMO_USERS.get(req.username.lower())
     if not user or user["password_hash"] != _hash(req.password):
-        raise HTTPException(401, "Invalid username or password")
+        raise HTTPException(401, "UserName or Password is Invalid")
     token = secrets.token_hex(24)
     _SESSIONS[token] = {
         "username": req.username.lower(),
