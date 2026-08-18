@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SHIELD — Mule Account Risk Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="scan-line"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">⛨</span>
+    <div class="brand-text">
+      <span class="brand-name">SHIELD</span>
+      <span class="brand-sub">Mule Account Risk Console</span>
+    </div>
+  </div>
+  <div class="topbar-status">
+    <span class="pulse-dot"></span>
+    <span id="statusLabel">SCANNING PORTFOLIO</span>
+  </div>
+  <button class="disclaimer-chip" id="disclaimerBtn" title="Click for full model disclosure">
+    ⚠ PROXY-LABEL MODEL — CLICK FOR DISCLOSURE
+  </button>
+</header>
+
+<main class="layout">
+
+  <section class="kpi-row" id="kpiRow"></section>
+
+  <section class="panel filters-panel">
+    <input id="searchInput" class="input" type="text" placeholder="Search account ID…" />
+    <select id="occupationFilter" class="input select"></select>
+    <select id="accountTypeFilter" class="input select"></select>
+    <select id="segmentFilter" class="input select"></select>
+    <label class="toggle">
+      <input type="checkbox" id="flaggedOnly" />
+      <span>Flagged only</span>
+    </label>
+    <div class="score-range">
+      <span class="range-label">Min score</span>
+      <input id="minScore" type="range" min="0" max="1000" value="0" />
+      <span id="minScoreVal" class="range-val">0</span>
+    </div>
+    <span class="result-count" id="resultCount"></span>
+  </section>
+
+  <section class="panel queue-panel">
+    <table class="queue-table">
+      <thead>
+        <tr>
+          <th data-sort="account_id">Account</th>
+          <th data-sort="account_id">Type</th>
+          <th data-sort="account_id">Occupation</th>
+          <th data-sort="age">Age</th>
+          <th data-sort="iso_score">Anomaly</th>
+          <th data-sort="xgb_score">XGB Prob</th>
+          <th data-sort="shield_score">SHIELD Score</th>
+          <th>Tier</th>
+        </tr>
+      </thead>
+      <tbody id="queueBody"></tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+</main>
+
+<!-- Detail drawer -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-id" id="drawerId">—</div>
+      <div class="drawer-tier" id="drawerTier"></div>
+    </div>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+
+  <div class="drawer-score">
+    <div class="score-big" id="drawerScore">0</div>
+    <div class="score-label">SHIELD Score / 1000</div>
+  </div>
+
+  <p class="narrative" id="drawerNarrative"></p>
+
+  <div class="drawer-section">
+    <h3>Meta</h3>
+    <div class="meta-grid" id="drawerMeta"></div>
+  </div>
+
+  <div class="drawer-section">
+    <h3>SHAP Explanation — factors driving this score</h3>
+    <div id="shapChart" class="shap-chart"></div>
+  </div>
+
+  <div class="drawer-section">
+    <div class="section-title-row">
+      <h3>Ring Detection</h3>
+      <span class="sim-badge">SIMULATED</span>
+    </div>
+    <p class="sim-note" id="networkNote"></p>
+    <svg id="networkGraph" width="100%" height="260"></svg>
+  </div>
+
+  <div class="drawer-section">
+    <h3>Investigator Actions</h3>
+    <div class="action-row">
+      <button class="btn btn-freeze" data-action="freeze">Freeze</button>
+      <button class="btn btn-escalate" data-action="escalate">Escalate</button>
+      <button class="btn btn-dismiss" data-action="dismiss">Dismiss</button>
+    </div>
+    <input id="actionNote" class="input" type="text" placeholder="Optional note…" />
+    <div class="audit-list" id="auditList"></div>
+  </div>
+</aside>
+
+<!-- Disclosure modal -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2>Model Disclosure</h2>
+    <p id="modalText"></p>
+    <button class="btn btn-primary" id="modalClose">Understood</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
