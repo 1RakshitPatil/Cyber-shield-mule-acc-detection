@@ -2,8 +2,8 @@
   "n_accounts": 9082,
   "n_features": 444,
   "pseudo_positive_rate": 0.030059458269103723,
-  "oof_auc": 0.9804901037984801,
-  "holdout_auc": 0.9859354039830771,
+  "oof_auc": 0.9798333079467741,
+  "holdout_auc": 0.9863172015271903,
   "holdout_size": 1817,
-  "flagged_count": 284
+  "flagged_count": 282
 }
