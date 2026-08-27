@@ -49,9 +49,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------------------------
+
 # Load artifacts once at startup
-# ---------------------------------------------------------------------------
+
 
 _scored: pd.DataFrame = pd.read_parquet(ARTIFACTS / "scored_accounts.parquet")
 _X: pd.DataFrame = pd.read_parquet(ARTIFACTS / "feature_matrix.parquet")
@@ -68,7 +68,7 @@ _network_cache: dict[int, dict] = {}
 if not AUDIT_LOG.exists():
     AUDIT_LOG.write_text("[]")
 
-# ---------------------------------------------------------------------------
+
 # Mock authentication — DEMO ONLY.
 #
 # This is intentionally lightweight: hardcoded demo accounts, SHA-256 password
@@ -80,14 +80,10 @@ if not AUDIT_LOG.exists():
 # not hand-rolled here. It exists to demonstrate the *shape* of an auth-gated
 # workflow (login screen, protected write actions, audit trail tied to a
 # named analyst) for the prototype demo, not to be a real security boundary.
-# ---------------------------------------------------------------------------
+
 import hashlib
-
-
 def _hash(pw: str) -> str:
     return hashlib.sha256(pw.encode()).hexdigest()
-
-
 _DEMO_USERS = {
     "analyst": {"password_hash": _hash("shield123"), "display_name": "Demo Analyst", "role": "Analyst"},
     "admin": {"password_hash": _hash("shield123"), "display_name": "Demo Admin", "role": "Compliance Officer"},
@@ -104,8 +100,6 @@ def get_current_user(authorization: Optional[str] = Header(None)) -> dict:
     if not session:
         raise HTTPException(401, "Invalid or expired session token")
     return session
-
-
 
 def _clean(v):
     """Make a numpy/pandas scalar JSON-safe."""
@@ -127,10 +121,7 @@ def _risk_tier(score: float) -> str:
         return "medium"
     return "low"
 
-
-# ---------------------------------------------------------------------------
 # Schemas
-# ---------------------------------------------------------------------------
 
 class AccountSummary(BaseModel):
     account_id: int
@@ -233,12 +224,7 @@ class SessionUser(BaseModel):
     username: str
     display_name: str
     role: str
-
-
-# ---------------------------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------------------------
-
 def _row_to_summary(row: pd.Series) -> dict:
     score = float(row["shield_score"])
     return {
@@ -253,8 +239,6 @@ def _row_to_summary(row: pd.Series) -> dict:
         "flagged": bool(row["flagged"]),
         "risk_tier": _risk_tier(score),
     }
-
-
 def _get_top_factors(account_id: int, k: int = 8) -> list[dict]:
     if account_id in _explanation_cache:
         return _explanation_cache[account_id]
